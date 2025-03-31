@@ -17,7 +17,7 @@ const HowToPlayModal = ({ isOpen, onClose }) => {
         </div>
 
         <div className="space-y-4">
-          <p>Guess the 5-letter word in 5 tries.</p>
+          <p>Guess the 5-letter word in 6 tries.</p>
 
           <ul className="list-disc pl-6 space-y-2">
             <li>Each guess must be a valid 5-letter word.</li>

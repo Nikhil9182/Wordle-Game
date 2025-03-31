@@ -34,14 +34,14 @@ const Keyboard = ({ onKeyPress, usedLetters }) => {
     }
   };
 
-  // Get class for key size
+  // Get class for key size - make keys adaptive to screen size
   const getKeySize = (key) => {
     if (key === "ENTER") {
-      return "h-10 text-xs px-1 flex-1 min-w-[40px] max-w-[60px]";
+      return "h-9 sm:h-10 text-xs px-1 flex-1 min-w-[30px] max-w-[55px]";
     } else if (key === "⌫") {
-      return "h-10 text-lg px-1 flex-1 min-w-[40px] max-w-[60px]";
+      return "h-9 sm:h-10 text-lg px-1 flex-1 min-w-[30px] max-w-[55px]";
     } else {
-      return "w-[8vw] h-10 max-w-[40px]";
+      return "w-[7vw] h-9 sm:h-10 max-w-[38px]";
     }
   };
 
@@ -54,8 +54,13 @@ const Keyboard = ({ onKeyPress, usedLetters }) => {
   return (
     <div className="w-full max-w-[500px] mx-auto px-1 sm:px-2">
       {rows.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex justify-center gap-[4px] mb-[4px]">
-          {rowIndex === 1 && <div className="w-[4px] sm:w-[12px]"></div>}
+        <div
+          key={rowIndex}
+          className="flex justify-center gap-[3px] md:gap-[4px] mb-[3px] md:mb-[4px]"
+        >
+          {rowIndex === 1 && (
+            <div className="w-[2px] sm:w-[4px] md:w-[8px]"></div>
+          )}
           {row.map((key) => (
             <button
               key={key}
@@ -65,7 +70,9 @@ const Keyboard = ({ onKeyPress, usedLetters }) => {
               {key}
             </button>
           ))}
-          {rowIndex === 1 && <div className="w-[4px] sm:w-[12px]"></div>}
+          {rowIndex === 1 && (
+            <div className="w-[2px] sm:w-[4px] md:w-[8px]"></div>
+          )}
         </div>
       ))}
     </div>

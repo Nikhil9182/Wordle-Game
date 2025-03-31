@@ -74,10 +74,10 @@ html, body, #root {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
   width: 100%;
   max-width: 420px;
-  margin-top: -1rem;
+  margin-top: -0.5rem;
 }
 
 .keyboard-container {
@@ -85,10 +85,14 @@ html, body, #root {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  position: relative;
+  bottom: 0;
+  max-height: 33vh; /* Limit keyboard height */
 }
 
 .game-status {
-  height: 2.5rem;
+  height: 2rem;
+  min-height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,9 +140,38 @@ html, body, #root {
   }
 }
 
-@media (max-height: 600px) {
+@media (min-height: 700px) {
+  .keyboard-container {
+    max-height: 28vh;
+  }
+  
   .game-board {
-    margin-top: -2rem;
+    gap: 0.25rem;
+  }
+}
+
+@media (max-height: 650px) {
+  .game-board {
+    margin-top: -1rem;
     gap: 0.15rem;
+    transform: scale(0.95);
+  }
+  
+  .keyboard-container {
+    max-height: 35vh;
+    transform: scale(0.9);
+    transform-origin: bottom center;
+  }
+}
+
+@media (max-height: 550px) {
+  .game-board {
+    margin-top: -1.5rem;
+    transform: scale(0.9);
+  }
+  
+  .keyboard-container {
+    max-height: 40vh;
+    transform: scale(0.85);
   }
 }

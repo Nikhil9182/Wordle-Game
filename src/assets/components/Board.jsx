@@ -7,7 +7,7 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
   const [hasWon, setHasWon] = useState(false);
   const [hasLost, setHasLost] = useState(false);
   const [gameState, setGameState] = useState("");
-  const [guesses, setGuesses] = useState(Array(5).fill(Array(5).fill("")));
+  const [guesses, setGuesses] = useState(Array(6).fill(Array(5).fill("")));
   const [currentGuess, setCurrentGuess] = useState("");
   const [guessIndex, setGuessIndex] = useState(0);
   const [usedLetters, setUsedLetters] = useState({});
@@ -54,7 +54,7 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
 
   const handleKeyDown = (event) => {
     if (hasWon || hasLost) return;
-    if (guessIndex >= 5) return;
+    if (guessIndex >= 6) return;
 
     setGameState("");
     let key = event.key.toUpperCase();
@@ -70,7 +70,7 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
 
   const handleKeyboardPress = (key) => {
     if (hasWon || hasLost) return;
-    if (guessIndex >= 5) return;
+    if (guessIndex >= 6) return;
 
     setGameState("");
 
@@ -129,7 +129,7 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
     setHasWon(false);
     setHasLost(false);
     setGameState("");
-    setGuesses(Array(5).fill(Array(5).fill("")));
+    setGuesses(Array(6).fill(Array(5).fill("")));
     setCurrentGuess("");
     setGuessIndex(0);
     setUsedLetters({});
@@ -215,7 +215,7 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
       <div className="game-board-wrapper">
         <div className="game-board">
           {guesses.map((word, i) => (
-            <div key={i} className="flex gap-1 sm:gap-2">
+            <div key={i} className="flex gap-1 sm:gap-1.5">
               {Array(5)
                 .fill(0)
                 .map((_, j) => {
@@ -228,8 +228,8 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
                   return (
                     <div
                       key={j}
-                      className={`w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-md
-                    flex items-center justify-center text-lg sm:text-xl md:text-2xl font-bold uppercase
+                      className={`w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-md
+                    flex items-center justify-center text-base sm:text-base md:text-lg font-bold uppercase
                     ${
                       i < guessIndex
                         ? getLetterStyle(word, letter, j)
@@ -245,10 +245,10 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
 
           {/* Replay Button - Appears when game ends */}
           {(hasWon || hasLost) && (
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-center mt-2 sm:mt-4">
               <button
                 onClick={resetGame}
-                className="px-5 py-2 bg-blue-500 text-white text-base sm:text-lg font-bold rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-4 py-1.5 sm:py-2 bg-blue-500 text-white text-sm sm:text-base font-bold rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 🔄 Play Again
               </button>

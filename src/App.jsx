@@ -12,7 +12,7 @@ function App() {
   };
 
   const checkIfLost = (guessIndex) => {
-    return guessIndex === 4;
+    return guessIndex === 5;
   };
 
   const fetchNewWord = async () => {
