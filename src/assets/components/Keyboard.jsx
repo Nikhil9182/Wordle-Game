@@ -37,11 +37,11 @@ const Keyboard = ({ onKeyPress, usedLetters }) => {
   // Get class for key size - make keys adaptive to screen size
   const getKeySize = (key) => {
     if (key === "ENTER") {
-      return "h-9 sm:h-10 text-xs px-1 flex-1 min-w-[30px] max-w-[55px]";
+      return "h-12 sm:h-10 text-xs px-1 flex-1 min-w-[30px] max-w-[75px]";
     } else if (key === "⌫") {
-      return "h-9 sm:h-10 text-lg px-1 flex-1 min-w-[30px] max-w-[55px]";
+      return "h-12 sm:h-10 text-lg px-1 flex-1 min-w-[30px] max-w-[75px]";
     } else {
-      return "w-[7vw] h-9 sm:h-10 max-w-[38px]";
+      return "w-[8vw] h-12 sm:h-10 max-w-[58px]";
     }
   };
 
@@ -52,7 +52,7 @@ const Keyboard = ({ onKeyPress, usedLetters }) => {
   };
 
   return (
-    <div className="w-full max-w-[500px] mx-auto px-1 sm:px-2">
+    <div className="w-full max-w-[800px] mx-auto px-1 sm:px-2">
       {rows.map((row, rowIndex) => (
         <div
           key={rowIndex}

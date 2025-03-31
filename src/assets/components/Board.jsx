@@ -14,6 +14,34 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
 
+  // Timer states
+  const [timer, setTimer] = useState(0);
+  const [isTimerActive, setIsTimerActive] = useState(true);
+
+  // Format time as MM:SS
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  // Timer effect
+  useEffect(() => {
+    let interval = null;
+
+    if (isTimerActive) {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer + 1);
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isTimerActive]);
+
   const getLetterStyle = (word, letter, index) => {
     if (!correctWord || word[0] === "")
       return "bg-white border-2 border-gray-300";
@@ -104,6 +132,8 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
       setCurrentGuess("");
 
       if (currentGuess === correctWord) {
+        // Stop the timer when the user wins
+        setIsTimerActive(false);
         setGameState("You Won 🏆");
         setHasWon(true);
         setShowConfetti(true);
@@ -117,6 +147,8 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
       }
 
       if (checkIfLost(guessIndex)) {
+        // Stop the timer when the user loses
+        setIsTimerActive(false);
         setHasLost(true);
         setGameState(`You Lost 💀 The word was: ${correctWord}`);
       }
@@ -133,6 +165,9 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
     setCurrentGuess("");
     setGuessIndex(0);
     setUsedLetters({});
+    // Reset and restart the timer
+    setTimer(0);
+    setIsTimerActive(true);
     fetchNewWord();
   };
 
@@ -143,6 +178,14 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
 
   return (
     <div className="game-container bg-gray-100">
+      {/* Timer Display */}
+      <div className="timer-display">
+        <div className="timer-content">
+          <span className="timer-icon">⏱️</span>
+          <span className="timer-time">{formatTime(timer)}</span>
+        </div>
+      </div>
+
       {/* How to Play Button */}
       <button
         onClick={() => setShowHowToPlay(true)}
@@ -197,8 +240,11 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
                 </div>
               ))}
             </div>
-            <p className="text-sm sm:text-base">
+            <p className="text-sm sm:text-base mb-2">
               You got it in {guessIndex} {guessIndex === 1 ? "try" : "tries"}!
+            </p>
+            <p className="text-sm sm:text-base font-semibold">
+              Time: {formatTime(timer)}
             </p>
           </div>
         </div>
