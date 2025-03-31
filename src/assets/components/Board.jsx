@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Keyboard from "./Keyboard";
+import HowToPlayModal from "./HowToPlayModal";
 
 const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
   // States
@@ -11,6 +12,7 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
   const [guessIndex, setGuessIndex] = useState(0);
   const [usedLetters, setUsedLetters] = useState({});
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showHowToPlay, setShowHowToPlay] = useState(false);
 
   const getLetterStyle = (word, letter, index) => {
     if (!correctWord || word[0] === "")
@@ -141,6 +143,21 @@ const Board = ({ correctWord, checkValidWord, checkIfLost, fetchNewWord }) => {
 
   return (
     <div className="game-container bg-gray-100">
+      {/* How to Play Button */}
+      <button
+        onClick={() => setShowHowToPlay(true)}
+        className="how-to-play-button bg-blue-500 text-white font-bold text-xl rounded-full w-10 h-10 flex items-center justify-center shadow-md hover:bg-blue-600 transition-colors"
+        aria-label="How to Play"
+      >
+        ?
+      </button>
+
+      {/* How to Play Modal */}
+      <HowToPlayModal
+        isOpen={showHowToPlay}
+        onClose={() => setShowHowToPlay(false)}
+      />
+
       {showConfetti && (
         <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
           {Array.from({ length: 100 }).map((_, i) => (
