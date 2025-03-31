@@ -17,7 +17,10 @@ function App() {
 
   const fetchNewWord = async () => {
     try {
-      const response = await fetch("/words.txt");
+      // Replace this URL with the direct URL to your hosted words.txt file
+      const response = await fetch(
+        "https://github.com/Nikhil9182/Wordle-Game/blob/master/public/words.txt"
+      );
       if (!response.ok) throw new Error("Failed to load words.");
 
       const text = await response.text();
