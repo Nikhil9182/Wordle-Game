@@ -7,6 +7,12 @@ An enhanced version of the popular Wordle game built with React.
 - Wordle gameplay with visual keyboard
 - Mobile and desktop compatible
 - Modern UI with Tailwind CSS
+- Light and dark mode support
+- Customizable gameplay options
+- Accessibility features
+- Responsive design for all devices
+- Animated tile responses
+- Interactive visual feedback
 
 ## Setup Instructions
 
@@ -19,6 +25,8 @@ An enhanced version of the popular Wordle game built with React.
 - React
 - React Router
 - Tailwind CSS
+- CSS Animations
+- Local Storage for preferences
 
 ## How to Contribute
 
@@ -48,3 +56,11 @@ To run the game on your local machine, follow these steps:
 4. **Start the Development Server**: `npm run dev`
 
 Ensure you have Node.js and npm installed on your machine. You can download them from [Node.js official website](https://nodejs.org/).
+
+## Gameplay Options
+
+The game includes several customization options:
+
+- Toggle between light and dark mode based on your preference
+- Enable on-screen keyboard only mode for touch devices
+- Additional settings accessible through the settings menu
