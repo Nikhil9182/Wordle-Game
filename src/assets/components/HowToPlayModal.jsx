@@ -4,13 +4,14 @@ const HowToPlayModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="instructions-modal">
+    <div className="instructions-modal" style={{ zIndex: 300 }}>
       <div className="instructions-content">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">How to Play Wordle</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-xl"
+            className="hover:text-gray-700 text-xl transition-colors"
+            style={{ color: "var(--text-color)" }}
           >
             ✕
           </button>
@@ -32,84 +33,84 @@ const HowToPlayModal = ({ isOpen, onClose }) => {
 
             <div className="mb-3">
               <div className="flex gap-1 mb-1">
-                <div className="w-10 h-10 flex items-center justify-center bg-green-500 text-white font-bold rounded">
+                <div className="letter-tile letter-tile-correct w-9 h-9 flex items-center justify-center rounded font-bold">
                   W
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
-                  O
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
+                  E
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
+                  A
+                </div>
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
                   R
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
-                  D
-                </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
-                  S
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
+                  Y
                 </div>
               </div>
               <p className="text-sm">
-                The letter <span className="font-bold">W</span> is in the word
-                and in the correct spot.
+                <strong>W</strong> is in the word and in the correct spot.
               </p>
             </div>
 
             <div className="mb-3">
               <div className="flex gap-1 mb-1">
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
                   P
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-yellow-500 text-white font-bold rounded">
+                <div className="letter-tile letter-tile-present w-9 h-9 flex items-center justify-center rounded font-bold">
                   I
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
                   L
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
                   O
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
                   T
                 </div>
               </div>
               <p className="text-sm">
-                The letter <span className="font-bold">I</span> is in the word
-                but in the wrong spot.
+                <strong>I</strong> is in the word but in the wrong spot.
               </p>
             </div>
 
             <div className="mb-3">
               <div className="flex gap-1 mb-1">
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
                   V
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
                   A
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
                   G
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-500 text-white font-bold rounded">
+                <div className="letter-tile letter-tile-absent w-9 h-9 flex items-center justify-center rounded font-bold">
                   U
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-black font-bold rounded">
+                <div className="letter-tile letter-tile-empty w-9 h-9 flex items-center justify-center rounded font-bold">
                   E
                 </div>
               </div>
               <p className="text-sm">
-                The letter <span className="font-bold">U</span> is not in the
-                word.
+                <strong>U</strong> is not in the word.
               </p>
             </div>
           </div>
-        </div>
 
-        <button
-          onClick={onClose}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 w-full"
-        >
-          Got it!
-        </button>
+          <div className="mt-6 text-center">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 rounded text-white font-medium"
+              style={{ backgroundColor: "var(--blue-button)" }}
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

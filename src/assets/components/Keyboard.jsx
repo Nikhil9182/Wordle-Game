@@ -19,29 +19,57 @@ const Keyboard = ({ onKeyPress, usedLetters }) => {
 
     // Base styles for all keys
     let baseStyle =
-      "rounded shadow-sm font-bold flex items-center justify-center select-none transition-colors duration-150 touch-manipulation";
+      "rounded shadow-md font-bold flex items-center justify-center select-none transition-colors duration-150 touch-manipulation";
 
-    // Status-based styles
+    // Status-based styles and colors using CSS variables
     switch (status) {
       case "correct":
-        return `${baseStyle} bg-green-500 text-white border border-green-600`;
+        return {
+          className: baseStyle,
+          style: {
+            backgroundColor: "var(--correct-bg)",
+            color: "white",
+            border: `1px solid var(--correct-border)`,
+          },
+        };
       case "present":
-        return `${baseStyle} bg-yellow-500 text-white border border-yellow-600`;
+        return {
+          className: baseStyle,
+          style: {
+            backgroundColor: "var(--present-bg)",
+            color: "white",
+            border: `1px solid var(--present-border)`,
+          },
+        };
       case "absent":
-        return `${baseStyle} bg-gray-500 text-white border border-gray-600`;
+        return {
+          className: baseStyle,
+          style: {
+            backgroundColor: "var(--absent-bg)",
+            color: "white",
+            border: `1px solid var(--absent-border)`,
+          },
+        };
       default:
-        return `${baseStyle} bg-gray-200 text-gray-800 hover:bg-gray-300 border border-gray-300`;
+        return {
+          className: baseStyle,
+          style: {
+            backgroundColor: "var(--keyboard-bg)",
+            color: "var(--keyboard-text)",
+            border: `1px solid var(--tile-border-empty)`,
+          },
+        };
     }
   };
 
   // Get class for key size - make keys adaptive to screen size
   const getKeySize = (key) => {
     if (key === "ENTER") {
-      return "h-12 sm:h-10 text-xs px-1 flex-1 min-w-[30px] max-w-[75px]";
+      return "h-14 sm:h-14 text-sm px-1 flex-1 min-w-[60px] max-w-[80px]";
     } else if (key === "⌫") {
-      return "h-12 sm:h-10 text-lg px-1 flex-1 min-w-[30px] max-w-[75px]";
+      return "h-14 sm:h-14 text-xl px-1 flex-1 min-w-[60px] max-w-[80px]";
     } else {
-      return "w-[8vw] h-12 sm:h-10 max-w-[58px]";
+      return "w-[9vw] h-14 sm:h-14 max-w-[65px]";
     }
   };
 
@@ -56,22 +84,26 @@ const Keyboard = ({ onKeyPress, usedLetters }) => {
       {rows.map((row, rowIndex) => (
         <div
           key={rowIndex}
-          className="flex justify-center gap-[3px] md:gap-[4px] mb-[3px] md:mb-[4px]"
+          className="flex justify-center gap-[4px] md:gap-[6px] mb-[6px] md:mb-[8px]"
         >
           {rowIndex === 1 && (
-            <div className="w-[2px] sm:w-[4px] md:w-[8px]"></div>
+            <div className="w-[4px] sm:w-[6px] md:w-[10px]"></div>
           )}
-          {row.map((key) => (
-            <button
-              key={key}
-              className={`${getKeyStyle(key)} ${getKeySize(key)}`}
-              onClick={() => handleKeyClick(key)}
-            >
-              {key}
-            </button>
-          ))}
+          {row.map((key) => {
+            const keyStyle = getKeyStyle(key);
+            return (
+              <button
+                key={key}
+                className={`${keyStyle.className} ${getKeySize(key)}`}
+                style={keyStyle.style}
+                onClick={() => handleKeyClick(key)}
+              >
+                {key}
+              </button>
+            );
+          })}
           {rowIndex === 1 && (
-            <div className="w-[2px] sm:w-[4px] md:w-[8px]"></div>
+            <div className="w-[4px] sm:w-[6px] md:w-[10px]"></div>
           )}
         </div>
       ))}

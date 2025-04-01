@@ -1,5 +1,124 @@
 @import "tailwindcss";
 
+:root {
+  --bg-color: #f3f4f6; /* Light mode gray-100 */
+  --bg-color-rgb: 243, 244, 246; /* RGB values for background color */
+  --text-color: #111827; /* Dark text */
+  --tile-bg-empty: #ffffff; /* White */
+  --tile-border-empty: #d1d5db; /* Gray-300 */
+  --keyboard-bg: #e5e7eb; /* Gray-200 */
+  --keyboard-text: #1f2937; /* Gray-800 */
+  --keyboard-hover: #d1d5db; /* Gray-300 */
+  --correct-bg: #10b981; /* Green-500 */
+  --correct-border: #059669; /* Green-600 */
+  --present-bg: #f59e0b; /* Yellow-500 */
+  --present-border: #d97706; /* Yellow-600 */
+  --absent-bg: #6b7280; /* Gray-500 */
+  --absent-border: #4b5563; /* Gray-600 */
+  --modal-bg: #ffffff; /* White */
+  --blue-button: #3b82f6; /* Blue-500 */
+  --blue-button-hover: #2563eb; /* Blue-600 */
+  --border-color: #e5e7eb; /* Gray-200 */
+  --toggle-off-bg: #d1d5db; /* Gray-300 */
+  --toggle-handle-color: #ffffff; /* White */
+  --toggle-handle-shadow: rgba(0, 0, 0, 0.2);
+  --tooltip-bg: rgba(0, 0, 0, 0.8); /* Tooltip background */
+  --tooltip-text: #ffffff; /* Tooltip text */
+}
+
+.dark-mode {
+  --bg-color: #121212; /* Near black */
+  --bg-color-rgb: 18, 18, 18; /* RGB values for background color */
+  --text-color: #f3f4f6; /* Light text */
+  --tile-bg-empty: #1f2937; /* Dark gray */
+  --tile-border-empty: #374151; /* Gray-700 */
+  --keyboard-bg: #374151; /* Gray-700 */
+  --keyboard-text: #f3f4f6; /* Gray-100 */
+  --keyboard-hover: #4b5563; /* Gray-600 */
+  --correct-bg: #059669; /* Green-600 (darker) */
+  --correct-border: #047857; /* Green-700 */
+  --present-bg: #d97706; /* Yellow-600 (darker) */
+  --present-border: #b45309; /* Yellow-700 */
+  --absent-bg: #1f2937; /* Darker gray for better contrast */
+  --absent-border: #111827; /* Near black for better contrast */
+  --modal-bg: #1f2937; /* Gray-800 */
+  --blue-button: #2563eb; /* Blue-600 */
+  --blue-button-hover: #1d4ed8; /* Blue-700 */
+  --border-color: #374151; /* Gray-700 */
+  --toggle-off-bg: #4b5563; /* Gray-600 */
+  --toggle-handle-color: #ffffff; /* White */
+  --toggle-handle-shadow: rgba(0, 0, 0, 0.3);
+  --tooltip-bg: rgba(40, 40, 40, 0.9); /* Tooltip background for dark mode */
+  --tooltip-text: #f3f4f6; /* Tooltip text for dark mode */
+}
+
+/* Header styles */
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  width: 100%;
+  padding: 0 1rem;
+  border-bottom: 3px solid var(--border-color);
+  position: relative;
+  background-color: var(--bg-color);
+  transition: background-color 0.3s, color 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background-image: linear-gradient(
+    to bottom,
+    var(--bg-color),
+    rgba(var(--bg-color-rgb), 0.95)
+  );
+}
+
+.logo-tiles {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-tiles .letter-tile {
+  width: 44px;
+  height: 44px;
+  font-size: 26px;
+  font-weight: 800;
+  animation: logoAppear 0.5s ease-in-out forwards;
+  opacity: 0;
+  transform: scale(0.8);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  border-width: 2px;
+}
+
+.logo-tiles .letter-tile:nth-child(1) { animation-delay: 0s; }
+.logo-tiles .letter-tile:nth-child(2) { animation-delay: 0.1s; }
+.logo-tiles .letter-tile:nth-child(3) { animation-delay: 0.2s; }
+.logo-tiles .letter-tile:nth-child(4) { animation-delay: 0.3s; }
+.logo-tiles .letter-tile:nth-child(5) { animation-delay: 0.4s; }
+.logo-tiles .letter-tile:nth-child(6) { animation-delay: 0.5s; }
+
+@keyframes logoAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.game-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-color);
+  letter-spacing: 0.1em;
+  margin: 0;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -12,6 +131,9 @@ body {
   position: fixed;
   width: 100%;
   height: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 html, body, #root {
@@ -32,10 +154,44 @@ html, body, #root {
   }
 }
 
+/* Animation for tile flip */
+@keyframes flip {
+  0% {
+    transform: rotateX(0deg);
+    background-color: var(--tile-bg-empty);
+    border-color: var(--tile-border-empty);
+    color: var(--text-color);
+  }
+  45% {
+    transform: rotateX(90deg);
+    background-color: var(--tile-bg-empty);
+    border-color: var(--tile-border-empty);
+    color: var(--text-color);
+  }
+  55% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
 .animate-fall {
   animation-name: fall;
   animation-timing-function: ease-in-out;
   animation-fill-mode: forwards;
+}
+
+.tile-flip {
+  transition: transform 0.15s ease-in-out, background-color 0.15s, border-color 0.15s;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.letter-tile-correct.tile-flip,
+.letter-tile-present.tile-flip,
+.letter-tile-absent.tile-flip {
+  animation: flip 0.5s ease forwards;
 }
 
 .app-container {
@@ -46,15 +202,19 @@ html, body, #root {
   max-width: 100%;
   overflow: hidden;
   position: relative;
+  background-color: var(--bg-color);
+  transition: background-color 0.3s;
 }
 
 .game-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 70px);
   padding-top: 0.5rem;
   overflow: hidden;
   position: relative;
+  background-color: var(--bg-color);
+  transition: background-color 0.3s;
 }
 
 .game-board-wrapper {
@@ -66,7 +226,7 @@ html, body, #root {
   min-height: 0;
   overflow: hidden;
   padding: 0.25rem;
-  margin-bottom: auto;
+  margin-bottom: 1rem;
 }
 
 .game-board {
@@ -74,140 +234,292 @@ html, body, #root {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.2rem;
+  gap: 0.35rem;
   width: 100%;
   max-width: 420px;
   margin-top: -0.5rem;
+  margin-bottom: 1rem;
 }
 
 .keyboard-container {
-  padding: 0.25rem 0.25rem 0.5rem 0.25rem;
+  padding: 0.5rem 0.5rem 1.5rem 0.5rem;
   width: 100%;
-  max-width: 600px;
+  max-width: 650px;
   margin: 0 auto;
   position: relative;
   bottom: 0;
-  max-height: 33vh; /* Limit keyboard height */
+  max-height: 33vh;
 }
 
+/* Controls section */
+.controls-section {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  z-index: 10;
+}
+
+/* How to Play button */
+.how-to-play-button {
+  background-color: var(--blue-button);
+  color: white;
+  font-weight: bold;
+  font-size: 1.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.how-to-play-button:hover {
+  background-color: var(--blue-button-hover);
+}
+
+/* Settings button */
+.settings-button {
+  background-color: var(--keyboard-bg);
+  color: var(--keyboard-text);
+  font-weight: bold;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--tile-border-empty);
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.settings-button:hover {
+  background-color: var(--keyboard-hover);
+  transform: scale(1.05);
+}
+
+.settings-button:active {
+  transform: scale(0.95);
+}
+
+.settings-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Replay button with consistent styling */
+.replay-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Tooltip styling */
+.tooltip {
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateX(-100%) translateY(-50%);
+  background-color: var(--tooltip-bg);
+  color: var(--tooltip-text);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeIn 0.2s forwards;
+  z-index: 100;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tooltip:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%) rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background-color: var(--tooltip-bg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-90%) translateY(-50%); }
+  to { opacity: 1; transform: translateX(-100%) translateY(-50%); }
+}
+
+/* Game status */
 .game-status {
   height: 2rem;
   min-height: 2rem;
-  margin-top: 3rem;
+  margin-top: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 0.25rem;
+  color: var(--text-color);
+  transition: color 0.3s;
 }
 
+/* Instruction modal */
 .instructions-modal {
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   z-index: 100;
   overflow: hidden;
 }
 
 .instructions-content {
-  background: white;
-  padding: 1rem;
+  background: var(--modal-bg);
+  color: var(--text-color);
+  padding: 1.5rem;
   border-radius: 0.5rem;
   max-width: 80%;
   max-height: 80vh;
   overflow-y: auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, color 0.3s;
 }
 
-/* Timer Display */
-.timer-display {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  z-index: 10;
+/* Settings specific styles */
+.setting-row {
+  padding-bottom: 1rem;
 }
 
-.timer-content {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  background-color: white;
-  padding: 0.5rem 0.75rem;
-  border-radius: 9999px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: #4b5563;
-  border: 1px solid #e5e7eb;
+.border-gray-200 {
+  border-color: var(--border-color);
 }
 
-.timer-icon {
-  font-size: 1rem;
+.dark\:border-gray-700 {
+  border-color: var(--border-color);
 }
 
-.timer-time {
-  font-family: monospace;
-  letter-spacing: 0.5px;
+.opacity-70 {
+  opacity: 0.7;
 }
 
-/* Adjust position of how-to-play button */
-.how-to-play-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 10;
+/* Toggle button styles */
+.settings-toggle {
+  position: relative;
+  border: 1px solid var(--tile-border-empty);
+  overflow: hidden;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
-/* Move game status down a bit to make room for timer */
-.game-status {
-  height: 2rem;
-  min-height: 2rem;
-  margin-top: 3rem;
+.settings-toggle span {
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  z-index: 1;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Letter tiles */
+.letter-tile {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0.25rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
-/* Media queries for responsive timer display */
-@media (max-width: 640px) {
-  .timer-content {
-    padding: 0.375rem 0.625rem;
-    font-size: 0.75rem;
-  }
-  
-  .timer-icon {
-    font-size: 0.875rem;
-  }
+.letter-tile-empty {
+  background-color: var(--tile-bg-empty);
+  border: 2px solid var(--tile-border-empty);
+  color: var(--text-color);
 }
 
-/* Adjust timer position on very small screens */
+.letter-tile-correct {
+  background-color: var(--correct-bg);
+  border: 2px solid var(--correct-border);
+  color: white;
+}
+
+.letter-tile-present {
+  background-color: var(--present-bg);
+  border: 2px solid var(--present-border);
+  color: white;
+}
+
+.letter-tile-absent {
+  background-color: var(--absent-bg);
+  border: 2px solid var(--absent-border);
+  color: white;
+}
+
+/* Adjust on very small screens */
 @media (max-width: 400px) {
-  .timer-display {
-    top: 0.75rem;
-    left: 0.75rem;
-  }
-  
-  .how-to-play-button {
+  .controls-section {
     top: 0.75rem;
     right: 0.75rem;
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 14px;
+  }
+  
+  .how-to-play-button, .settings-button {
+    width: 2rem !important;
+    height: 2rem !important;
+    font-size: 1rem;
+  }
+  
+  .settings-button svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  .tooltip {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+  
+  .game-title {
+    font-size: 1.5rem;
+  }
+  
+  .logo-tiles .letter-tile {
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+    border-width: 2px;
+  }
+  
+  .logo-tiles {
+    gap: 3px;
+  }
+
+  .game-header {
+    height: 65px;
   }
 }
 
-@media (max-height: 700px) {
-  .game-board {
-    margin-top: -1.5rem;
-    gap: 0.2rem;
+@media (max-width: 350px) {
+  .logo-tiles .letter-tile {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
   }
   
-  .game-status {
-    height: 2rem;
-    margin-bottom: 0.1rem;
+  .logo-tiles {
+    gap: 2px;
+  }
+  
+  .game-header {
+    height: 60px;
   }
 }
 
@@ -217,21 +529,22 @@ html, body, #root {
   }
   
   .game-board {
-    gap: 0.25rem;
+    gap: 0.35rem;
   }
 }
 
 @media (max-height: 650px) {
   .game-board {
     margin-top: -1rem;
-    gap: 0.15rem;
+    gap: 0.25rem;
     transform: scale(0.95);
   }
   
   .keyboard-container {
     max-height: 35vh;
-    transform: scale(0.9);
+    transform: scale(0.95);
     transform-origin: bottom center;
+    margin-bottom: -0.5rem;
   }
 }
 
@@ -244,5 +557,6 @@ html, body, #root {
   .keyboard-container {
     max-height: 40vh;
     transform: scale(0.85);
+    margin-bottom: -1rem;
   }
 }
