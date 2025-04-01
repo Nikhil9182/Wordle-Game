@@ -12,6 +12,8 @@ const Board = ({
   toggleDarkMode,
   keyboardOnly,
   toggleKeyboardOnly,
+  hardMode,
+  toggleHardMode,
 }) => {
   // States
   const [hasWon, setHasWon] = useState(false);
@@ -25,6 +27,9 @@ const Board = ({
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showKeyboardOnlyMessage, setShowKeyboardOnlyMessage] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(null);
+  const [requiredLetters, setRequiredLetters] = useState([]);
+  const [showSettings, setShowSettings] = useState(false);
+  const [gameWonInHardMode, setGameWonInHardMode] = useState(false);
 
   // Briefly show keyboard-only message when toggled on
   useEffect(() => {
@@ -46,12 +51,23 @@ const Board = ({
 
   const updateLetterStatuses = (guess) => {
     const newUsedLetters = { ...usedLetters };
+    const newRequiredLetters = [...requiredLetters];
 
     // First mark correct letters
     for (let i = 0; i < guess.length; i++) {
       const letter = guess[i];
       if (correctWord[i] === letter) {
         newUsedLetters[letter] = "correct";
+
+        // For hard mode, add correctly positioned letters to requirements
+        if (
+          hardMode &&
+          !newRequiredLetters.some(
+            (item) => item.letter === letter && item.index === i
+          )
+        ) {
+          newRequiredLetters.push({ letter, index: i, status: "correct" });
+        }
       }
     }
 
@@ -64,12 +80,25 @@ const Board = ({
         newUsedLetters[letter] !== "correct"
       ) {
         newUsedLetters[letter] = "present";
+
+        // For hard mode, add present letters to requirements
+        if (
+          hardMode &&
+          !newRequiredLetters.some(
+            (item) => item.letter === letter && item.status === "present"
+          )
+        ) {
+          newRequiredLetters.push({ letter, index: -1, status: "present" });
+        }
       } else if (!newUsedLetters[letter]) {
         newUsedLetters[letter] = "absent";
       }
     }
 
     setUsedLetters(newUsedLetters);
+    if (hardMode) {
+      setRequiredLetters(newRequiredLetters);
+    }
   };
 
   const handleKeyDown = (event) => {
@@ -114,37 +143,76 @@ const Board = ({
     return true;
   };
 
+  const isValidHardModeGuess = (guess) => {
+    if (!hardMode || requiredLetters.length === 0) return true;
+
+    const guessArray = guess.split("");
+
+    // Check if all required letters are present in the guess
+    for (const required of requiredLetters) {
+      if (required.status === "correct") {
+        // If it's a correctly positioned letter, it must be in the same position
+        if (guessArray[required.index] !== required.letter) {
+          setGameState(
+            `Must use ${required.letter} in position ${required.index + 1}`
+          );
+          return false;
+        }
+      } else if (required.status === "present") {
+        // If it's a present letter, it must be included somewhere in the guess
+        if (!guessArray.includes(required.letter)) {
+          setGameState(`Guess must include ${required.letter}`);
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
   const submitGuess = () => {
-    if (checkValidWord(currentGuess) && checkIfAlreadyEntered(currentGuess)) {
-      const newGuesses = [...guesses];
-      newGuesses[guessIndex] = currentGuess.split("");
-      setGuesses(newGuesses);
+    // First check if it's a valid word
+    if (!checkValidWord(currentGuess)) {
+      setGameState("❌ Must be 5 letters!");
+      return;
+    }
 
-      // Update letter statuses for keyboard
-      updateLetterStatuses(currentGuess);
+    // Check if it's already been entered
+    if (!checkIfAlreadyEntered(currentGuess)) {
+      setGameState("Word already used!");
+      return;
+    }
 
-      setGuessIndex(guessIndex + 1);
-      setCurrentGuess("");
+    // Check hard mode constraints
+    if (!isValidHardModeGuess(currentGuess)) {
+      // Message is set in isValidHardModeGuess
+      return;
+    }
 
-      if (currentGuess === correctWord) {
-        setGameState("You Won 🏆");
-        setHasWon(true);
-        setShowConfetti(true);
+    // Process valid guess
+    const newGuesses = [...guesses];
+    newGuesses[guessIndex] = currentGuess.split("");
+    setGuesses(newGuesses);
 
-        // Hide confetti after 7 seconds
-        setTimeout(() => {
-          setShowConfetti(false);
-        }, 7000);
+    // Update letter statuses for keyboard
+    updateLetterStatuses(currentGuess);
 
-        return;
-      }
+    setGuessIndex(guessIndex + 1);
+    setCurrentGuess("");
 
-      if (checkIfLost(guessIndex)) {
-        setHasLost(true);
-        setGameState(`You Lost 💀 The word was: ${correctWord}`);
-      }
-    } else {
-      setGameState("❌ Not Valid!");
+    // Check if won
+    if (currentGuess === correctWord) {
+      // Store the current mode (hard or easy)
+      setGameWonInHardMode(hardMode);
+      setGameState("Amazing!");
+      setHasWon(true);
+      setShowConfetti(true);
+      return;
+    }
+
+    if (checkIfLost(guessIndex)) {
+      setHasLost(true);
+      setGameState(`You Lost 💀 The word was: ${correctWord}`);
     }
   };
 
@@ -156,13 +224,23 @@ const Board = ({
     setCurrentGuess("");
     setGuessIndex(0);
     setUsedLetters({});
+    setRequiredLetters([]);
     fetchNewWord();
   };
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentGuess, guessIndex, hasWon, hasLost, correctWord, keyboardOnly]);
+  }, [
+    currentGuess,
+    guessIndex,
+    hasWon,
+    hasLost,
+    correctWord,
+    keyboardOnly,
+    requiredLetters,
+    hardMode,
+  ]);
 
   return (
     <div className="game-container">
@@ -198,9 +276,14 @@ const Board = ({
             toggleDarkMode={toggleDarkMode}
             keyboardOnly={keyboardOnly}
             toggleKeyboardOnly={toggleKeyboardOnly}
+            hardMode={hardMode}
+            toggleHardMode={toggleHardMode}
+            gameActive={guessIndex > 0 && !hasWon && !hasLost}
             onMouseEnter={() => setTooltipVisible("settings")}
             onMouseLeave={() => setTooltipVisible(null)}
             tooltipVisible={tooltipVisible === "settings"}
+            showSettings={showSettings}
+            setShowSettings={setShowSettings}
           />
         </div>
         <div className="relative">
@@ -236,7 +319,7 @@ const Board = ({
       />
 
       {showConfetti && (
-        <div className="fixed inset-0 pointer-events-none z-40 overflow-hidden">
+        <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden">
           {Array.from({ length: 100 }).map((_, i) => (
             <div
               key={i}
@@ -256,8 +339,8 @@ const Board = ({
         </div>
       )}
 
-      {hasWon && (
-        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-40 overflow-hidden">
+      {hasWon && !showSettings && (
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-30 overflow-hidden">
           <div
             className="p-4 sm:p-6 rounded-lg shadow-lg text-center pointer-events-auto max-w-xs sm:max-w-sm mx-auto"
             style={{
@@ -290,26 +373,15 @@ const Board = ({
             <p className="text-sm sm:text-base mb-2">
               You got it in {guessIndex} {guessIndex === 1 ? "try" : "tries"}!
             </p>
-          </div>
-        </div>
-      )}
-
-      {showKeyboardOnlyMessage && (
-        <div className="fixed bottom-0 left-0 right-0 mb-[calc(30vh_+_10px)] z-10 bg-opacity-60 px-2 pointer-events-none">
-          <div
-            className="text-center mx-auto max-w-[350px] bg-opacity-90 pointer-events-none transition-opacity"
-            style={{
-              backgroundColor: "var(--bg-color)",
-              color: "var(--keyboard-text)",
-              borderRadius: "8px",
-              padding: "8px 16px",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
-              border: "1px solid var(--tile-border-empty)",
-            }}
-          >
-            <p className="text-sm font-medium">
-              On-screen keyboard only mode active
-            </p>
+            {/* Only show hard mode champion badge if game was won in hard mode */}
+            {gameWonInHardMode && (
+              <p
+                className="text-sm font-medium mt-2 mb-2"
+                style={{ color: "var(--present-bg)" }}
+              >
+                🏆 Hard Mode Champion 🏆
+              </p>
+            )}
           </div>
         </div>
       )}
@@ -318,6 +390,14 @@ const Board = ({
         {gameState && (
           <div className="text-lg sm:text-xl font-bold text-center w-full">
             {gameState.toUpperCase()}
+          </div>
+        )}
+        {hardMode && !gameState && !hasWon && !hasLost && (
+          <div
+            className="text-sm font-medium text-center w-full"
+            style={{ color: "var(--present-bg)" }}
+          >
+            HARD MODE ACTIVE
           </div>
         )}
       </div>

@@ -4,8 +4,8 @@ const HowToPlayModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="instructions-modal" style={{ zIndex: 300 }}>
-      <div className="instructions-content">
+    <div className="instructions-modal" style={{ zIndex: 400 }}>
+      <div className="instructions-content" style={{ maxWidth: "450px" }}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">How to Play Wordle</h2>
           <button

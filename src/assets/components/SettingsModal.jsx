@@ -7,11 +7,14 @@ const SettingsModal = ({
   toggleDarkMode,
   keyboardOnly,
   toggleKeyboardOnly,
+  hardMode,
+  toggleHardMode,
+  gameActive,
 }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="instructions-modal" style={{ zIndex: 300 }}>
+    <div className="instructions-modal" style={{ zIndex: 400 }}>
       <div className="instructions-content" style={{ maxWidth: "450px" }}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Game Settings</h2>
@@ -147,21 +150,35 @@ const SettingsModal = ({
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   className="w-6 h-6"
+                  style={{
+                    color: gameActive ? "var(--absent-bg)" : "currentColor",
+                  }}
                 >
                   <path d="M12.378 1.602a.75.75 0 00-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03zM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 00.372-.648V7.93zM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 00.372.648l8.628 5.033z" />
                 </svg>
                 <span className="font-medium text-lg">Hard Mode</span>
               </div>
               <button
-                className="settings-toggle relative inline-flex h-8 w-16 items-center rounded-md transition-colors focus:outline-none ml-4"
+                onClick={gameActive ? null : toggleHardMode}
+                className={`settings-toggle relative inline-flex h-8 w-16 items-center rounded-md transition-colors focus:outline-none ml-4 ${
+                  gameActive ? "opacity-60 cursor-not-allowed" : ""
+                }`}
                 style={{
-                  backgroundColor: "var(--toggle-off-bg)",
+                  backgroundColor: hardMode
+                    ? "var(--correct-bg)"
+                    : "var(--toggle-off-bg)",
                   boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-                  border: "2px solid var(--tile-border-empty)",
+                  border: "2px solid",
+                  borderColor: hardMode
+                    ? "var(--correct-border)"
+                    : "var(--tile-border-empty)",
                 }}
+                disabled={gameActive}
               >
                 <span
-                  className="inline-block h-6 w-6 transform rounded-md transition-transform translate-x-1"
+                  className={`inline-block h-6 w-6 transform rounded-md transition-transform ${
+                    hardMode ? "translate-x-9" : "translate-x-1"
+                  }`}
                   style={{
                     backgroundColor: "var(--toggle-handle-color)",
                     boxShadow: "0 1px 2px var(--toggle-handle-shadow)",
@@ -171,7 +188,13 @@ const SettingsModal = ({
               </button>
             </div>
             <p className="text-sm opacity-70">
-              Must use revealed hints in subsequent guesses (coming soon)
+              {gameActive ? (
+                <span className="text-red-500">
+                  Hard mode can only be changed before starting a new game
+                </span>
+              ) : (
+                "Use revealed hints in subsequent guesses (more challenging)"
+              )}
             </p>
           </div>
 

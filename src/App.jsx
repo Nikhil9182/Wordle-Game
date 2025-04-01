@@ -5,6 +5,12 @@ import Board from "./assets/components/Board";
 function App() {
   const [correctWord, setCorrectWord] = useState("");
   const [validWords, setValidWords] = useState(new Set());
+  const [hardMode, setHardMode] = useState(() => {
+    // Check if hard mode preference is stored
+    const savedPreference = localStorage.getItem("hardMode");
+    return savedPreference === "true" || false;
+  });
+
   const [darkMode, setDarkMode] = useState(() => {
     // Check if dark mode preference is stored
     const savedMode = localStorage.getItem("darkMode");
@@ -58,6 +64,11 @@ function App() {
     localStorage.setItem("keyboardOnly", keyboardOnly);
   }, [keyboardOnly]);
 
+  useEffect(() => {
+    // Save hard mode preference to localStorage
+    localStorage.setItem("hardMode", hardMode);
+  }, [hardMode]);
+
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => !prevMode);
   };
@@ -66,32 +77,68 @@ function App() {
     setKeyboardOnly((prevMode) => !prevMode);
   };
 
+  const toggleHardMode = () => {
+    // Can only toggle hard mode when game is reset/new
+    const newHardMode = !hardMode;
+    setHardMode(newHardMode);
+
+    // Fetch a new word when toggling hard mode
+    fetchNewWord(newHardMode);
+  };
+
   const checkIfValidWord = (currentGuess) => {
-    return validWords.has(currentGuess);
+    return currentGuess.length === 5;
   };
 
   const checkIfLost = (guessIndex) => {
     return guessIndex === 5;
   };
 
-  const fetchNewWord = async () => {
+  const fetchNewWord = async (isHardMode = hardMode) => {
     try {
-      const response = await fetch("words.txt");
-      if (!response.ok) throw new Error("Failed to load words.");
+      const wordsFile = isHardMode ? "hard.txt" : "easy.txt";
+      const response = await fetch(wordsFile);
+
+      if (!response.ok) {
+        // Fallback to normal words if hard words file doesn't exist
+        if (isHardMode) {
+          console.warn("Hard words file not found, using regular words.txt");
+          const fallbackResponse = await fetch("easy.txt");
+          if (!fallbackResponse.ok) throw new Error("Failed to load words.");
+          return processWordList(await fallbackResponse.text());
+        }
+        throw new Error("Failed to load words.");
+      }
 
       const text = await response.text();
-      const words = text
-        .trim()
-        .split("\n")
-        .map((word) => word.trim().toUpperCase());
-
-      if (words.length > 0) {
-        const randomWord = words[Math.floor(Math.random() * words.length)];
-        setValidWords(new Set(words));
-        setCorrectWord(randomWord);
-      }
+      processWordList(text);
     } catch (error) {
       console.error("Error fetching words:", error);
+      // Fallback to use regular words.txt if hard-words.txt doesn't exist
+      if (isHardMode) {
+        try {
+          const fallbackResponse = await fetch("words.txt");
+          if (fallbackResponse.ok) {
+            const text = await fallbackResponse.text();
+            processWordList(text);
+          }
+        } catch (fallbackError) {
+          console.error("Error with fallback:", fallbackError);
+        }
+      }
+    }
+  };
+
+  const processWordList = (text) => {
+    const words = text
+      .trim()
+      .split("\n")
+      .map((word) => word.trim().toUpperCase());
+
+    if (words.length > 0) {
+      const randomWord = words[Math.floor(Math.random() * words.length)];
+      setValidWords(new Set(words));
+      setCorrectWord(randomWord);
     }
   };
 
@@ -127,6 +174,8 @@ function App() {
           toggleDarkMode={toggleDarkMode}
           keyboardOnly={keyboardOnly}
           toggleKeyboardOnly={toggleKeyboardOnly}
+          hardMode={hardMode}
+          toggleHardMode={toggleHardMode}
         />
       </div>
     </Router>
