@@ -6,8 +6,6 @@ const Settings = ({
   toggleDarkMode,
   keyboardOnly,
   toggleKeyboardOnly,
-  hardMode,
-  toggleHardMode,
   gameActive,
   onMouseEnter,
   onMouseLeave,
@@ -45,8 +43,6 @@ const Settings = ({
         toggleDarkMode={toggleDarkMode}
         keyboardOnly={keyboardOnly}
         toggleKeyboardOnly={toggleKeyboardOnly}
-        hardMode={hardMode}
-        toggleHardMode={toggleHardMode}
         gameActive={gameActive}
       />
     </>

@@ -183,12 +183,6 @@ const Board = ({
       return;
     }
 
-    // Check hard mode constraints
-    if (!isValidHardModeGuess(currentGuess)) {
-      // Message is set in isValidHardModeGuess
-      return;
-    }
-
     // Process valid guess
     const newGuesses = [...guesses];
     newGuesses[guessIndex] = currentGuess.split("");
@@ -202,8 +196,6 @@ const Board = ({
 
     // Check if won
     if (currentGuess === correctWord) {
-      // Store the current mode (hard or easy)
-      setGameWonInHardMode(hardMode);
       setGameState("Amazing!");
       setHasWon(true);
       setShowConfetti(true);
@@ -216,31 +208,10 @@ const Board = ({
     }
   };
 
-  const resetGame = () => {
-    setHasWon(false);
-    setHasLost(false);
-    setGameState("");
-    setGuesses(Array(6).fill(Array(5).fill("")));
-    setCurrentGuess("");
-    setGuessIndex(0);
-    setUsedLetters({});
-    setRequiredLetters([]);
-    fetchNewWord();
-  };
-
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [
-    currentGuess,
-    guessIndex,
-    hasWon,
-    hasLost,
-    correctWord,
-    keyboardOnly,
-    requiredLetters,
-    hardMode,
-  ]);
+  }, [currentGuess, guessIndex, hasWon, hasLost, correctWord, keyboardOnly]);
 
   return (
     <div className="game-container">
@@ -276,8 +247,6 @@ const Board = ({
             toggleDarkMode={toggleDarkMode}
             keyboardOnly={keyboardOnly}
             toggleKeyboardOnly={toggleKeyboardOnly}
-            hardMode={hardMode}
-            toggleHardMode={toggleHardMode}
             gameActive={guessIndex > 0 && !hasWon && !hasLost}
             onMouseEnter={() => setTooltipVisible("settings")}
             onMouseLeave={() => setTooltipVisible(null)}
@@ -285,30 +254,6 @@ const Board = ({
             showSettings={showSettings}
             setShowSettings={setShowSettings}
           />
-        </div>
-        <div className="relative">
-          <button
-            onClick={resetGame}
-            className="settings-button replay-button"
-            aria-label="Play Again"
-            onMouseEnter={() => setTooltipVisible("replay")}
-            onMouseLeave={() => setTooltipVisible(null)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M4.755 10.059a7.5 7.5 0 0112.548-3.364l1.903 1.903h-3.183a.75.75 0 100 1.5h4.992a.75.75 0 00.75-.75V4.356a.75.75 0 00-1.5 0v3.18l-1.9-1.9A9 9 0 003.306 9.67a.75.75 0 101.45.388zm15.408 3.352a.75.75 0 00-.919.53 7.5 7.5 0 01-12.548 3.364l-1.902-1.903h3.183a.75.75 0 000-1.5H2.984a.75.75 0 00-.75.75v4.992a.75.75 0 001.5 0v-3.18l1.9 1.9a9 9 0 0015.059-4.035.75.75 0 00-.53-.918z"
-                clipRule="evenodd"
-              />
-            </svg>
-            {tooltipVisible === "replay" && (
-              <div className="tooltip">Play Again</div>
-            )}
-          </button>
         </div>
       </div>
 
@@ -373,15 +318,6 @@ const Board = ({
             <p className="text-sm sm:text-base mb-2">
               You got it in {guessIndex} {guessIndex === 1 ? "try" : "tries"}!
             </p>
-            {/* Only show hard mode champion badge if game was won in hard mode */}
-            {gameWonInHardMode && (
-              <p
-                className="text-sm font-medium mt-2 mb-2"
-                style={{ color: "var(--present-bg)" }}
-              >
-                🏆 Hard Mode Champion 🏆
-              </p>
-            )}
           </div>
         </div>
       )}
